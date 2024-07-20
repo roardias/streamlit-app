@@ -1,7 +1,7 @@
 import streamlit as st
 from datetime import datetime
+import pandas as pd
 
-# Define as funções do seu código original
 def calcular_datas_vencimento(data_solicitacao, parcelas):
     data_solicitacao = datetime.strptime(data_solicitacao, '%d/%m/%Y')
     if data_solicitacao.day <= 10:
@@ -50,11 +50,11 @@ def calcular_coeficiente(fatores):
     return coeficiente
 
 def calcular_valor_financiado(valor, escolha):
-    if escolha == '1':
+    if escolha == 'Empréstimo':
         TC = 150.29
         Seguro = 77.70
         valor_financiado = float(valor) + TC + Seguro
-    elif escolha == '2':
+    elif escolha == 'Antecipação Salarial':
         TC_Antecipacao = 50.00
         valor_financiado = float(valor) + TC_Antecipacao
     return valor_financiado
@@ -107,13 +107,179 @@ def calcular_amortizacao_e_saldo_devedor(valor_financiado, coeficiente, parcelas
 
     return amortizacoes, saldos_devedores, iof_diario_parcelas
 
+def set_css():
+    st.markdown(
+        """
+        <style>
+        .stApp {
+            background-color: #D2D1D3;
+        }
+        .stTextInput > div > input,
+        .stNumberInput > div > div > input {
+            background-color: #f2f2f2;
+            border: 1px solid #ccc;
+            border-radius: 15px;
+            padding: 10px;
+            width: 100%;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        .stRadio > div {
+            display: flex;
+            flex-direction: column;
+            background-color: #7CB26E;
+            border-radius: 15px;
+            padding: 10px;
+            border: 2px solid #7CB26E;
+            margin-top: -10px;
+        }
+        .stRadio > div > label {
+            color: #7CB26E;
+            font-weight: bold;
+            margin-bottom: -5px;
+        }
+        .stRadio > div > div > label {
+            color: #FFFFFF;
+        }
+        .stRadio > div > div > label:hover {
+            color: #f2f2f2;
+        }
+        .stButton > button {
+            background-color: #7CB26E;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .stButton > button:hover {
+            background-color: #689F63;
+        }
+        .stDataFrame table {
+            border-collapse: collapse;
+            width: 50%;
+            margin: auto;
+            border-radius: 15px;
+            overflow: hidden;
+            table-layout: fixed;
+        }
+        .stDataFrame table th,
+        .stDataFrame table td {
+            border: 2px solid #000000;
+            color: #7CB26E;
+            text-align: center;
+            padding: 5px;
+            font-size: 12px;
+        }
+        .stDataFrame table thead th {
+            background-color: #7CB26E;
+            color: white;
+            text-align: center;
+        }
+        .stDataFrame table tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .stDataFrame table tbody tr:hover {
+            background-color: #e6e6e6;
+        }
+        .stMarkdown h1 {
+            color: #7CB26E;
+        }
+        .stMarkdown p {
+            color: #7CB26E;
+        }
+        .stRadio > div > label,
+        .stNumberInput > label,
+        .stTextInput > label {
+            color: #7CB26E;
+        }
+        .stRadio > div > div > label {
+            text-align: center;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
 def main():
-    st.title('Calculadora de Empréstimo/Antecipação Salarial')
+    st.set_page_config(page_title="Calculadora de Empréstimo/Antecipação Salarial", layout="wide")
+    set_css()
 
-    escolha = st.radio("Você quer empréstimo ou antecipação salarial?", ('Empréstimo', 'Antecipação Salarial'))
-    valor = st.number_input("Qual valor deseja? (em reais)", min_value=0.0, step=0.01)
-    taxa_juros = st.number_input("Qual a taxa de juros mensal? (%)", min_value=0.0, step=0.01)
-    data_solicitacao = st.date_input("Qual a data de solicitação?")
+    st.image("C:\\Programas criados por Rodrigo\\Simulador de emprestimo\\streamlit-app\\MARCA_CONSIGO_CRED_VETOR_CURVAS_5.png", width=200)
+    st.markdown('<h1 style="color: #7CB26E;">Calculadora de Empréstimo/Antecipação Salarial</h1>', unsafe_allow_html=True)
 
-    if escolha == 'Empréstimo':
-        parcelas = st.slider("Em quantas parcelas deseja parcelar? (máximo de 60 vezes)", min_value=1, max_value=60)
+    if "reset_form" not in st.session_state:
+        st.session_state.reset_form = False
+
+    if st.session_state.reset_form:
+        st.session_state.valor = 0.0
+        st.session_state.taxa_juros = 0.0
+        st.session_state.parcelas = 1
+        st.session_state.escolha = "Empréstimo"
+        st.session_state.reset_form = False
+
+    col1, col2 = st.columns([1, 2])
+
+    with col1:
+        st.markdown('<div style="background-color: #7CB26E; border-radius: 15px; padding: 10px;">', unsafe_allow_html=True)
+        st.markdown('<p style="color: #7CB26E; font-weight: bold; margin-bottom: -5px;">Tipo de operação:</p>', unsafe_allow_html=True)
+        escolha = st.radio("", ('Empréstimo', 'Antecipação Salarial'), key='escolha')
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    with col2:
+        st.markdown(f'<p style="color: #7CB26E;">Data de solicitação: {datetime.now().strftime("%d/%m/%Y")}</p>', unsafe_allow_html=True)
+        valor = st.number_input("Valor solicitado (R$):", min_value=0.0, step=0.01, key='valor')
+        taxa_juros = st.number_input("Taxa de juros mensal (%):", min_value=0.0, step=0.01, key='taxa_juros')
+        if escolha == 'Empréstimo':
+            parcelas = st.number_input("Quantidade de parcelas:", min_value=1, step=1, key='parcelas')
+        else:
+            parcelas = 1
+            st.markdown('<p style="color: #7CB26E;">A quantidade de parcelas para antecipação salarial é sempre 1.</p>', unsafe_allow_html=True)
+
+    if st.button('Calcular'):
+        try:
+            data_solicitacao = datetime.now().strftime('%d/%m/%Y')
+            data_solicitacao_dt = datetime.strptime(data_solicitacao, '%d/%m/%Y')
+            datas_vencimento = calcular_datas_vencimento(data_solicitacao, parcelas)
+            dias_vencimento, dias_acumulados = calcular_dias_vencimento(datas_vencimento, data_solicitacao_dt)
+            fatores = calcular_fatores(taxa_juros, dias_acumulados)
+            coeficiente = calcular_coeficiente(fatores)
+            taxas_juros_parcela = calcular_taxa_juros_parcela(taxa_juros, dias_vencimento)
+            valor_financiado_inicial = calcular_valor_financiado(valor, escolha)
+            valor_prestacao = calcular_valor_prestacao(valor_financiado_inicial, coeficiente)
+            amortizacoes, saldos_devedores, iof_diario_parcelas = calcular_amortizacao_e_saldo_devedor(
+                valor_financiado_inicial, coeficiente, parcelas, taxas_juros_parcela, dias_acumulados)
+            iof_adicional = calcular_iof_adicional(valor_financiado_inicial)
+            total_iof = iof_adicional + sum(iof_diario_parcelas)
+            valor_financiado_com_iof = valor_financiado_inicial + total_iof
+            valor_prestacao_com_iof = calcular_valor_prestacao(valor_financiado_com_iof, coeficiente)
+
+            # Exibir resultados gerais
+            st.markdown(f'<p style="color: #7CB26E;">Valor solicitado: R$ {valor:,.2f}</p>', unsafe_allow_html=True)
+            st.markdown(f'<p style="color: #7CB26E;">Taxa de Juros: {taxa_juros}%</p>', unsafe_allow_html=True)
+            st.markdown(f'<p style="color: #7CB26E;">Quantidade de parcelas: {parcelas}</p>', unsafe_allow_html=True)
+
+            # Preparar os dados para exibição em tabela
+            data = {
+                "Número da Parcela": list(range(1, parcelas + 1)),
+                "Data de Vencimento": [data_venc.strftime('%d/%m/%Y') for data_venc in datas_vencimento],
+                "Valor da Parcela": [f"R$ {valor_prestacao_com_iof:,.2f}" for _ in range(parcelas)]
+            }
+            
+            df = pd.DataFrame(data)
+
+            # Aplicar estilo CSS à tabela
+            st.write('<style>table {table-layout: fixed; width: 50%; border-collapse: collapse;} th, td {color: #7CB26E; border: 2px solid black; text-align: center; padding: 5px; font-size: 12px;}</style>', unsafe_allow_html=True)
+            st.write(df.to_html(index=False), unsafe_allow_html=True)
+
+            # Reset the form fields
+            st.session_state.reset_form = True
+
+        except ValueError as e:
+            st.error(f"Ocorreu um erro ao processar os dados: {e}")
+        except Exception as e:
+            st.error(f"Ocorreu um erro inesperado: {e}")
+
+if __name__ == "__main__":
+    main()
