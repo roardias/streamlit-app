@@ -149,8 +149,7 @@ def main():
 
 
     with col2:
-            
-
+            "x"
 
     if st.button('Calcular'):
         try:
