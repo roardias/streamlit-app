@@ -207,37 +207,40 @@ def main():
                     valor_financiado_com_iof = valor_financiado_inicial + total_iof
                     valor_prestacao_com_iof = calcular_valor_prestacao(valor_financiado_com_iof, coeficiente)
 
-                    # Adicionar espaço vazio na col2
-                    with col2:
-                        st.write("")
-                        st.write("")
-                        st.write("")
-                        st.markdown(f'<p style="color: #7CB26E;">Valor solicitado: R$ {valor:,.2f}</p>', unsafe_allow_html=True)
-                        st.markdown(f'<p style="color: #7CB26E;">Taxa de Juros: {taxa_juros}%</p>', unsafe_allow_html=True)
-                        st.markdown(f'<p style="color: #7CB26E;">Quantidade de parcelas: {parcelas}</p>', unsafe_allow_html=True)
+                    if valor_prestacao_com_iof > parcela_maxima:
+                        st.error(f"Sua parcela não pode ser maior que a parcela máxima de R$ {parcela_maxima:,.2f}. Simule novamente e tente aumentar a quantidade de parcelas em seu empréstimo.")
+                    else:
+                        # Adicionar espaço vazio na col2
+                        with col2:
+                            st.write("")
+                            st.write("")
+                            st.write("")
+                            st.markdown(f'<p style="color: #7CB26E;">Valor solicitado: R$ {valor:,.2f}</p>', unsafe_allow_html=True)
+                            st.markdown(f'<p style="color: #7CB26E;">Taxa de Juros: {taxa_juros}%</p>', unsafe_allow_html=True)
+                            st.markdown(f'<p style="color: #7CB26E;">Quantidade de parcelas: {parcelas}</p>', unsafe_allow_html=True)
 
-                        data = {
-                            "Número da Parcela": list(range(1, parcelas + 1)),
-                            "Data de Vencimento": [data_venc.strftime('%d/%m/%Y') for data_venc in datas_vencimento],
-                            "Valor da Parcela": [f"R$ {valor_prestacao_com_iof:,.2f}" for _ in range(parcelas)]
-                        }
-                        df = pd.DataFrame(data)
-                        
-                        # Estilizar o DataFrame
-                        styled_df = df.style.set_table_styles(
-                            [{'selector': 'table',
-                                'props': [('border', '1px solid black')]},
-                            {'selector': 'td',
-                                'props': [('border', '1px solid black'), ('white-space', 'nowrap')]},
-                            {'selector': 'th',
-                                'props': [('border', '1px solid black'), ('white-space', 'nowrap')]}]
-                        ).set_properties(**{'text-align': 'center'}).hide(axis='index')
+                            data = {
+                                "Número da Parcela": list(range(1, parcelas + 1)),
+                                "Data de Vencimento": [data_venc.strftime('%d/%m/%Y') for data_venc in datas_vencimento],
+                                "Valor da Parcela": [f"R$ {valor_prestacao_com_iof:,.2f}" for _ in range(parcelas)]
+                            }
+                            df = pd.DataFrame(data)
+                            
+                            # Estilizar o DataFrame
+                            styled_df = df.style.set_table_styles(
+                                [{'selector': 'table',
+                                    'props': [('border', '1px solid black')]},
+                                {'selector': 'td',
+                                    'props': [('border', '1px solid black'), ('white-space', 'nowrap')]},
+                                {'selector': 'th',
+                                    'props': [('border', '1px solid black'), ('white-space', 'nowrap')]}]
+                            ).set_properties(**{'text-align': 'center'}).hide(axis='index')
 
-                        # Exibir o DataFrame no Streamlit
-                        st.dataframe(styled_df, use_container_width=True, hide_index=True)
+                            # Exibir o DataFrame no Streamlit
+                            st.dataframe(styled_df, use_container_width=True, hide_index=True)
 
-                    # Reset the form fields
-                    st.session_state.reset_form = True
+                        # Reset the form fields
+                        st.session_state.reset_form = True
 
                 except ValueError as e:
                     st.error(f"Ocorreu um erro ao processar os dados: {e}")
