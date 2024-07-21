@@ -179,7 +179,9 @@ def main():
             escolha = st.radio("", ('Empréstimo', 'Antecipação Salarial'), key='escolha')
 
             st.markdown(f'<p style="color: #7CB26E;">Data de solicitação: {datetime.now(tz).strftime("%d/%m/%Y")}</p>', unsafe_allow_html=True)
-            valor = st.number_input("Valor solicitado (R$):", min_value=0.0, step=0.01, key='valor')
+            valor = st.number_input("Valor solicitado (R$):", min_value=0.0, max_value=margem, step=0.01, key='valor')
+            if valor > margem:
+                st.warning(f"O valor máximo liberado para você é de R$ {margem:,.2f}")
             taxa_juros = st.number_input("Taxa de juros mensal (%):", min_value=0.0, step=0.01, key='taxa_juros')
             if escolha == 'Empréstimo':
                 parcelas = st.number_input("Quantidade de parcelas:", min_value=1, step=1, key='parcelas')
