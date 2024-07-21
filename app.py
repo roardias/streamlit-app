@@ -267,6 +267,7 @@ def main():
                "Valor da Parcela": [f"R$ {valor_prestacao_com_iof:,.2f}" for _ in range(parcelas)]
             }
             df = pd.DataFrame(data)
+            st.dataframe(df, use_container_width=True, hide_index=True)
 
             # Estilizar o DataFrame
             styled_df = df.style.set_table_styles(
