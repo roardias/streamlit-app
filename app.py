@@ -134,7 +134,8 @@ def main():
     col1, col2 = st.columns([1, 2])
 
     with col1:
-        st.markdown('<p style="color: #7CB26E; font-weight: bold;">Tipo de operação:</p>', unsafe_allow_html=True)
+        st.markdown('<div style="background-color: #7CB26E; border-radius: 15px; padding: 10px;">', unsafe_allow_html=True)
+        st.markdown('<p style="color: #FFFFFF; font-weight: bold;">Tipo de operação:</p>', unsafe_allow_html=True)
         escolha = st.radio("", ('Empréstimo', 'Antecipação Salarial'), key='escolha')
         st.markdown('</div>', unsafe_allow_html=True)
 
@@ -145,7 +146,7 @@ def main():
             parcelas = st.number_input("Quantidade de parcelas:", min_value=1, step=1, key='parcelas')
         else:
             parcelas = 1
-            st.markdown('<p style="color: #7CB26E;"> Antecipação salarial é 1 parcela</p>', unsafe_allow_html=True)
+            st.markdown('<p style="color: #7CB26E;">A quantidade de parcelas para antecipação salarial é sempre 1.</p>', unsafe_allow_html=True)
         
         if st.button('Calcular'):
             try:
@@ -165,8 +166,11 @@ def main():
                 valor_financiado_com_iof = valor_financiado_inicial + total_iof
                 valor_prestacao_com_iof = calcular_valor_prestacao(valor_financiado_com_iof, coeficiente)
 
-                # Exibir resultados em col2
+                # Adicionar espaço vazio na col2
                 with col2:
+                    st.write("")
+                    st.write("")
+                    st.write("")
                     st.markdown(f'<p style="color: #7CB26E;">Valor solicitado: R$ {valor:,.2f}</p>', unsafe_allow_html=True)
                     st.markdown(f'<p style="color: #7CB26E;">Taxa de Juros: {taxa_juros}%</p>', unsafe_allow_html=True)
                     st.markdown(f'<p style="color: #7CB26E;">Quantidade de parcelas: {parcelas}</p>', unsafe_allow_html=True)
