@@ -145,7 +145,7 @@ def main():
             parcelas = st.number_input("Quantidade de parcelas:", min_value=1, step=1, key='parcelas')
         else:
             parcelas = 1
-            st.markdown('<p style="color: #7CB26E;">A quantidade de parcelas para antecipação salarial é sempre 1.</p>', unsafe_allow_html=True)
+            st.markdown('<p style="color: #7CB26E;"> Antecipação salarial é 1 parcela</p>', unsafe_allow_html=True)
         
         if st.button('Calcular'):
             try:
