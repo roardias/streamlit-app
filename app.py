@@ -6,8 +6,15 @@ import pytz
 tz = pytz.timezone('America/Sao_Paulo')
 
 def carregar_dados_cpf(cpf):
-    df = pd.read_csv("Planilha/margens.csv")
-    return df[df["cpf2"] == cpf]
+    try:
+        df = pd.read_csv("Planilha/margens.csv", delimiter=",", encoding="utf-8")
+        return df[df["cpf2"] == cpf]
+    except pd.errors.ParserError:
+        st.error("Erro ao ler o arquivo CSV. Verifique o formato do arquivo.")
+        return pd.DataFrame()
+    except FileNotFoundError:
+        st.error("Arquivo CSV não encontrado. Verifique o caminho do arquivo.")
+        return pd.DataFrame()
 
 def calcular_datas_vencimento(data_solicitacao, parcelas):
     data_solicitacao = datetime.strptime(data_solicitacao, '%d/%m/%Y')
