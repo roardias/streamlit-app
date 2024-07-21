@@ -275,7 +275,7 @@ def main():
                     'props': [('border', '1px solid black'), ('white-space', 'nowrap')]},
                  {'selector': 'th',
                     'props': [('border', '1px solid black'), ('white-space', 'nowrap')]}]
-            ).set_properties(**{'text-align': 'center'})
+            ).set_properties(**{'text-align': 'center'}).hide(axis='index')
 
             # Exibir o DataFrame no Streamlit
             st.dataframe(styled_df)
