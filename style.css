@@ -1,0 +1,87 @@
+.stApp {
+    background-color: #D2D1D3;
+}
+.stTextInput > div > input,
+.stNumberInput > div > div > input {
+    background-color: #1c1c1e;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 10px;
+    width: 100%;
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #fff;
+}
+.stRadio > div {
+    display: flex;
+    flex-direction: column;
+    background-color: #7CB26E;
+    border-radius: 15px;
+    padding: 10px;
+    border: 2px solid #7CB26E;
+    margin-top: -10px;
+}
+.stRadio > div > label {
+    color: #FFFFFF;
+    font-weight: bold;
+    margin-bottom: -5px;
+}
+.stRadio > div > div > label {
+    color: #FFFFFF;
+}
+.stRadio > div > div > label:hover {
+    color: #f2f2f2;
+}
+.stButton > button {
+    background-color: #7CB26E;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+.stButton > button:hover {
+    background-color: #689F63;
+}
+.stDataFrame table {
+    border-collapse: collapse;
+    width: 50%;
+    margin: auto;
+    border-radius: 15px;
+    overflow: hidden;
+    table-layout: fixed;
+}
+.stDataFrame table th,
+.stDataFrame table td {
+    border: 2px solid #000000;
+    color: #7CB26E;
+    text-align: center;
+    padding: 5px;
+    font-size: 12px;
+}
+.stDataFrame table thead th {
+    background-color: #7CB26E;
+    color: white;
+    text-align: center;
+}
+.stDataFrame table tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+.stDataFrame table tbody tr:hover {
+    background-color: #e6e6e6;
+}
+.stMarkdown h1 {
+    color: #7CB26E;
+}
+.stMarkdown p {
+    color: #7CB26E;
+}
+.stRadio > div > label,
+.stNumberInput > label,
+.stTextInput > label {
+    color: #7CB26E;
+}
+.stRadio > div > div > label {
+    text-align: center;
+}
