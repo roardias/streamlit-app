@@ -135,7 +135,7 @@ def main():
 
     with col1:
 
-        st.markdown('<p style="color: #7CB26E; font-weight: bold; margin-bottom: -1px;">Tipo de operação:</p>', unsafe_allow_html=True)
+        st.markdown('<p style="color: #7CB26E; font-weight: bold; margin-bottom: -5px;">Tipo de operação:</p>', unsafe_allow_html=True)
         escolha = st.radio("", ('Empréstimo', 'Antecipação Salarial'), key='escolha')
         st.markdown('</div>', unsafe_allow_html=True)
 
