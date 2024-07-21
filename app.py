@@ -7,7 +7,7 @@ tz = pytz.timezone('America/Sao_Paulo')
 
 def carregar_dados_cpf(cpf):
     try:
-        df = pd.read_csv("Planilha/margens.csv", delimiter=",", encoding="utf-8")
+        df = pd.read_csv("Planilha/margens.csv", delimiter=",", encoding="utf-8", dtype=str)
         return df[df["cpf2"] == cpf]
     except pd.errors.ParserError:
         st.error("Erro ao ler o arquivo CSV. Verifique o formato do arquivo.")
@@ -139,8 +139,8 @@ def main():
             if not dados_cpf.empty:
                 nome = dados_cpf.iloc[0]["Nome"]
                 empresa = dados_cpf.iloc[0]["Empresa"]
-                margem = dados_cpf.iloc[0]["Margem"]
-                parcela_maxima = dados_cpf.iloc[0]["Parcela Maxima"]
+                margem = float(dados_cpf.iloc[0]["Margem"])
+                parcela_maxima = float(dados_cpf.iloc[0]["Parcela Maxima"])
 
                 st.markdown(f"<p>Olá {nome}, confira as informações abaixo:</p>", unsafe_allow_html=True)
                 st.markdown(f"<p>Trabalha na empresa: {empresa}</p>", unsafe_allow_html=True)
