@@ -1,10 +1,12 @@
 import streamlit as st
 from datetime import datetime
 import pandas as pd
+import pytz
+
+tz = pytz.timezone('America/Sao_Paulo')
 
 def calcular_datas_vencimento(data_solicitacao, parcelas):
-    data_atual = datetime.now()
-    data_solicitacao = data_atual.strptime(data_solicitacao, '%d/%m/%Y')
+    data_solicitacao = datetime.now(tz).strptime(data_solicitacao, '%d/%m/%Y')
     if data_solicitacao.day <= 10:
         if data_solicitacao.month == 12:
             primeira_parcela = data_solicitacao.replace(day=10, month=1, year=data_solicitacao.year + 1)
