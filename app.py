@@ -206,7 +206,7 @@ def main():
     st.set_page_config(page_title="Calculadora de Empréstimo/Antecipação Salarial", layout="wide")
     set_css()
 
-    st.image("C:\Programas criados por Rodrigo\Simulador de emprestimo\streamlit-app\images\MARCA_CONSIGO_CRED_VETOR_CURVAS_5.png", width=200)
+    st.image("images/MARCA_CONSIGO_CRED_VETOR_CURVAS_5.png", width=200)
     st.markdown('<h1 style="color: #7CB26E;">Calculadora de Empréstimo/Antecipação Salarial</h1>', unsafe_allow_html=True)
 
     if "reset_form" not in st.session_state:
