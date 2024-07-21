@@ -128,9 +128,23 @@ def carregar_css(file_name):
     with open(file_name) as f:
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
+def set_numeric_input_js():
+    st.markdown(
+        """
+        <script>
+        const elements = document.querySelectorAll('input[type="number"]');
+        elements.forEach(element => {
+            element.setAttribute('inputmode', 'numeric');
+        });
+        </script>
+        """,
+        unsafe_allow_html=True
+    )
+
 def main():
     st.set_page_config(page_title="Calculadora de Empréstimo/Antecipação Salarial", layout="wide")
     carregar_css("style.css")
+    set_numeric_input_js()
 
     st.image("images/MARCA_CONSIGO_CRED_VETOR_CURVAS_5.png", width=200)
     st.markdown('<h1 style="color: #7CB26E;">Calculadora de Empréstimo/Antecipação Salarial</h1>', unsafe_allow_html=True)
