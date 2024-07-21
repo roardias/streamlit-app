@@ -242,7 +242,7 @@ def main():
 
     if st.button('Calcular'):
         try:
-            data_solicitacao = datetime.now().strftime('%d/%m/%Y')
+            data_solicitacao = datetime.now(tz).strftime('%d/%m/%Y')
             data_solicitacao_dt = datetime.strptime(data_solicitacao, '%d/%m/%Y')
             datas_vencimento = calcular_datas_vencimento(data_solicitacao, parcelas)
             dias_vencimento, dias_acumulados = calcular_dias_vencimento(datas_vencimento, data_solicitacao_dt)
