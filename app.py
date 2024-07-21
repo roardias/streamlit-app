@@ -7,13 +7,13 @@ tz = pytz.timezone('America/Sao_Paulo')
 
 def carregar_dados_cpf(cpf):
     try:
-        df = pd.read_csv("Planilha/margens.csv", delimiter=",", encoding="utf-8", dtype=str)
+        df = pd.read_excel("Planilha/margens.xlsx", dtype=str)
         return df[df["cpf2"] == cpf]
     except pd.errors.ParserError:
-        st.error("Erro ao ler o arquivo CSV. Verifique o formato do arquivo.")
+        st.error("Erro ao ler o arquivo Excel. Verifique o formato do arquivo.")
         return pd.DataFrame()
     except FileNotFoundError:
-        st.error("Arquivo CSV não encontrado. Verifique o caminho do arquivo.")
+        st.error("Arquivo Excel não encontrado. Verifique o caminho do arquivo.")
         return pd.DataFrame()
 
 def calcular_datas_vencimento(data_solicitacao, parcelas):
