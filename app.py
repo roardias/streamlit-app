@@ -149,15 +149,7 @@ def main():
 
 
     with col2:
-        st.markdown(f'<p style="color: #7CB26E;">Data de solicitação: {datetime.now(tz).strftime("%d/%m/%Y")}</p>', unsafe_allow_html=True)
-        valor = st.number_input("Valor solicitado (R$):", min_value=0.0, step=0.01, key='valor')
-        taxa_juros = st.number_input("Taxa de juros mensal (%):", min_value=0.0, step=0.01, key='taxa_juros')
-        if escolha == 'Empréstimo':
-            parcelas = st.number_input("Quantidade de parcelas:", min_value=1, step=1, key='parcelas')
-        else:
-            parcelas = 1
-            st.markdown('<p style="color: #7CB26E;">A quantidade de parcelas para antecipação salarial é sempre 1.</p>', unsafe_allow_html=True)
-
+       
     if st.button('Calcular'):
         try:
             data_solicitacao = datetime.now(tz).strftime('%d/%m/%Y')
