@@ -169,8 +169,7 @@ def main():
             valor_financiado_com_iof = valor_financiado_inicial + total_iof
             valor_prestacao_com_iof = calcular_valor_prestacao(valor_financiado_com_iof, coeficiente)
             
-            df = pd.DataFrame(data)
-            
+                        
             # Exibir resultados gerais
             st.markdown(f'<p style="color: #7CB26E;">Valor solicitado: R$ {valor:,.2f}</p>', unsafe_allow_html=True)
             st.markdown(f'<p style="color: #7CB26E;">Taxa de Juros: {taxa_juros}%</p>', unsafe_allow_html=True)
@@ -182,6 +181,7 @@ def main():
                "Valor da Parcela": [f"R$ {valor_prestacao_com_iof:,.2f}" for _ in range(parcelas)]
             }
            
+            df = pd.DataFrame(data)
             
             # Estilizar o DataFrame
             styled_df = df.style.set_table_styles(
