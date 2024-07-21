@@ -231,7 +231,7 @@ def main():
         st.markdown('</div>', unsafe_allow_html=True)
 
     with col2:
-        st.markdown(f'<p style="color: #7CB26E;">Data de solicitação: {datetime.now().strftime("%d/%m/%Y")}</p>', unsafe_allow_html=True)
+        st.markdown(f'<p style="color: #7CB26E;">Data de solicitação: {datetime.now(tz).strftime("%d/%m/%Y")}</p>', unsafe_allow_html=True)
         valor = st.number_input("Valor solicitado (R$):", min_value=0.0, step=0.01, key='valor')
         taxa_juros = st.number_input("Taxa de juros mensal (%):", min_value=0.0, step=0.01, key='taxa_juros')
         if escolha == 'Empréstimo':
