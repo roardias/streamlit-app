@@ -260,6 +260,26 @@ def main():
             st.markdown(f'<p style="color: #7CB26E;">Taxa de Juros: {taxa_juros}%</p>', unsafe_allow_html=True)
             st.markdown(f'<p style="color: #7CB26E;">Quantidade de parcelas: {parcelas}</p>', unsafe_allow_html=True)
 
+            data = {
+               "Número da Parcela": list(range(1, parcelas + 1)),
+               "Data de Vencimento": [data_venc.strftime('%d/%m/%Y') for data_venc in datas_vencimento],
+               "Valor da Parcela": [f"R$ {valor_prestacao_com_iof:,.2f}" for _ in range(parcelas)]
+            }
+            df = pd.DataFrame(data)
+
+            # Estilizar o DataFrame
+            styled_df = df.style.set_table_styles(
+                [{'selector': 'table',
+                    'props': [('border', '1px solid black')]},
+                 {'selector': 'td',
+                    'props': [('border', '1px solid black'), ('white-space', 'nowrap')]},
+                 {'selector': 'th',
+                    'props': [('border', '1px solid black'), ('white-space', 'nowrap')]}]
+            ).set_properties(**{'text-align': 'center'})
+
+            # Exibir o DataFrame no Streamlit
+            st.dataframe(styled_df)
+
             # Preparar os dados para exibição em tabela
             data = {
                 "Número da Parcela": list(range(1, parcelas + 1)),
