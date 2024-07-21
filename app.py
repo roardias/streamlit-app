@@ -3,6 +3,7 @@ import pandas as pd
 from datetime import datetime
 import pytz
 import streamlit.components.v1 as components
+from streamlit_autorefresh import st_autorefresh
 
 tz = pytz.timezone('America/Sao_Paulo')
 
@@ -143,6 +144,9 @@ def set_numeric_input_js():
     )
 
 def main():
+    # Refresh page to ensure the JavaScript is applied
+    st_autorefresh(interval=1000, limit=2, key="num_input_refresh")
+
     st.set_page_config(page_title="Calculadora de Empréstimo/Antecipação Salarial", layout="wide")
     carregar_css("style.css")
     set_numeric_input_js()
