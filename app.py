@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 import pytz
+import streamlit.components.v1 as components
 
 tz = pytz.timezone('America/Sao_Paulo')
 
@@ -129,7 +130,7 @@ def carregar_css(file_name):
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
 def set_numeric_input_js():
-    st.markdown(
+    components.html(
         """
         <script>
         const elements = document.querySelectorAll('input[type="number"]');
@@ -138,7 +139,7 @@ def set_numeric_input_js():
         });
         </script>
         """,
-        unsafe_allow_html=True
+        height=0,
     )
 
 def main():
