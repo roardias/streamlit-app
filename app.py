@@ -110,104 +110,13 @@ def calcular_amortizacao_e_saldo_devedor(valor_financiado, coeficiente, parcelas
 
     return amortizacoes, saldos_devedores, iof_diario_parcelas
 
-def set_css():
-    st.markdown(
-        """
-        <style>
-        .stApp {
-            background-color: #D2D1D3;
-        }
-        .stTextInput > div > input,
-        .stNumberInput > div > div > input {
-            background-color: #f2f2f2;
-            border: 1px solid #ccc;
-            border-radius: 15px;
-            padding: 10px;
-            width: 100%;
-            margin-bottom: 10px;
-            font-size: 16px;
-        }
-        .stRadio > div {
-            display: flex;
-            flex-direction: column;
-            background-color: #7CB26E;
-            border-radius: 15px;
-            padding: 10px;
-            border: 2px solid #7CB26E;
-            margin-top: -10px;
-        }
-        .stRadio > div > label {
-            color: #7CB26E;
-            font-weight: bold;
-            margin-bottom: -5px;
-        }
-        .stRadio > div > div > label {
-            color: #FFFFFF;
-        }
-        .stRadio > div > div > label:hover {
-            color: #f2f2f2;
-        }
-        .stButton > button {
-            background-color: #7CB26E;
-            color: white;
-            border: none;
-            border-radius: 15px;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        .stButton > button:hover {
-            background-color: #689F63;
-        }
-        .stDataFrame table {
-            border-collapse: collapse;
-            width: 50%;
-            margin: auto;
-            border-radius: 15px;
-            overflow: hidden;
-            table-layout: fixed;
-        }
-        .stDataFrame table th,
-        .stDataFrame table td {
-            border: 2px solid #000000;
-            color: #7CB26E;
-            text-align: center;
-            padding: 5px;
-            font-size: 12px;
-        }
-        .stDataFrame table thead th {
-            background-color: #7CB26E;
-            color: white;
-            text-align: center;
-        }
-        .stDataFrame table tbody tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-        .stDataFrame table tbody tr:hover {
-            background-color: #e6e6e6;
-        }
-        .stMarkdown h1 {
-            color: #7CB26E;
-        }
-        .stMarkdown p {
-            color: #7CB26E;
-        }
-        .stRadio > div > label,
-        .stNumberInput > label,
-        .stTextInput > label {
-            color: #7CB26E;
-        }
-        .stRadio > div > div > label {
-            text-align: center;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
+def carregar_css(file_name):
+    with open(file_name) as f:
+        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
 def main():
     st.set_page_config(page_title="Calculadora de Empréstimo/Antecipação Salarial", layout="wide")
-    set_css()
+    carregar_css("style.css")
 
     st.image("images/MARCA_CONSIGO_CRED_VETOR_CURVAS_5.png", width=200)
     st.markdown('<h1 style="color: #7CB26E;">Calculadora de Empréstimo/Antecipação Salarial</h1>', unsafe_allow_html=True)
@@ -225,8 +134,8 @@ def main():
     col1, col2 = st.columns([1, 2])
 
     with col1:
- 
-        st.markdown('<p style="color: #7CB26E; font-weight: bold; margin-bottom: -5px;">Tipo de operação:</p>', unsafe_allow_html=True)
+       
+        st.markdown('<p style="color: #FFFFFF; font-weight: bold; margin-bottom: -5px;">Tipo de operação:</p>', unsafe_allow_html=True)
         escolha = st.radio("", ('Empréstimo', 'Antecipação Salarial'), key='escolha')
         st.markdown('</div>', unsafe_allow_html=True)
 
