@@ -149,7 +149,7 @@ def main():
 
 
     with col2:
-       
+       "x"
     if st.button('Calcular'):
         try:
             data_solicitacao = datetime.now(tz).strftime('%d/%m/%Y')
