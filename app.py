@@ -146,7 +146,7 @@ def main():
         else:
             parcelas = 1
             st.markdown('<p style="color: #7CB26E;">A quantidade de parcelas para antecipação salarial é sempre 1.</p>', unsafe_allow_html=True)
-
+        st.button('Calcular')    
 
     with col2:
         if st.button('Calcular'):
