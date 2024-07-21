@@ -3,7 +3,8 @@ from datetime import datetime
 import pandas as pd
 
 def calcular_datas_vencimento(data_solicitacao, parcelas):
-    data_solicitacao = datetime.strptime(data_solicitacao, '%d/%m/%Y')
+    data_atual = datetime.now()
+    data_solicitacao = data_atual.strptime(data_solicitacao, '%d/%m/%Y')
     if data_solicitacao.day <= 10:
         if data_solicitacao.month == 12:
             primeira_parcela = data_solicitacao.replace(day=10, month=1, year=data_solicitacao.year + 1)
