@@ -135,105 +135,112 @@ def main():
     st.image("images/MARCA_CONSIGO_CRED_VETOR_CURVAS_5.png", width=200)
     st.markdown('<h1 style="color: #7CB26E;">Calculadora de Empréstimo/Antecipação Salarial</h1>', unsafe_allow_html=True)
 
-    cpf = st.text_input("Digite seu CPF (somente números):")
-    if len(cpf) == 11 and cpf.isdigit():
-        if st.button('Buscar'):
-            dados_cpf = carregar_dados_cpf(cpf)
-            if not dados_cpf.empty:
-                nome = dados_cpf.iloc[0]["Nome"]
-                empresa = dados_cpf.iloc[0]["Empresa"]
-                margem = float(dados_cpf.iloc[0]["Margem"])
-                parcela_maxima = float(dados_cpf.iloc[0]["Parcela Maxima"])
+    if "cpf_validado" not in st.session_state:
+        st.session_state.cpf_validado = False
 
-                st.markdown(f"<p>Olá {nome}, confira as informações abaixo:</p>", unsafe_allow_html=True)
-                st.markdown(f"<p>Trabalha na empresa: {empresa}</p>", unsafe_allow_html=True)
-                st.markdown(f"<p>Margem pré-aprovada: R$ {margem:,.2f}</p>", unsafe_allow_html=True)
-                st.markdown(f"<p>Parcela máxima: R$ {parcela_maxima:,.2f}</p>", unsafe_allow_html=True)
-
-                if "reset_form" not in st.session_state:
-                    st.session_state.reset_form = False
-
-                if st.session_state.reset_form:
-                    st.session_state.valor = 0.0
-                    st.session_state.taxa_juros = 0.0
-                    st.session_state.parcelas = 1
-                    st.session_state.escolha = "Empréstimo"
-                    st.session_state.reset_form = False
-
-                col1, col2 = st.columns([1, 2])
-
-                with col1:
-                    st.markdown('<p style="color: #7CB26E; font-weight: bold;">Tipo de operação:</p>', unsafe_allow_html=True)
-                    escolha = st.radio("", ('Empréstimo', 'Antecipação Salarial'), key='escolha')
-
-                    st.markdown(f'<p style="color: #7CB26E;">Data de solicitação: {datetime.now(tz).strftime("%d/%m/%Y")}</p>', unsafe_allow_html=True)
-                    valor = st.number_input("Valor solicitado (R$):", min_value=0.0, step=0.01, key='valor')
-                    taxa_juros = st.number_input("Taxa de juros mensal (%):", min_value=0.0, step=0.01, key='taxa_juros')
-                    if escolha == 'Empréstimo':
-                        parcelas = st.number_input("Quantidade de parcelas:", min_value=1, step=1, key='parcelas')
-                    else:
-                        parcelas = 1
-                        st.markdown('<p style="color: #7CB26E;">A quantidade de parcelas para antecipação salarial é sempre 1.</p>', unsafe_allow_html=True)
-
-                    if st.button('Calcular'):
-                        try:
-                            data_solicitacao = datetime.now(tz).strftime('%d/%m/%Y')
-                            data_solicitacao_dt = datetime.strptime(data_solicitacao, '%d/%m/%Y')
-                            datas_vencimento = calcular_datas_vencimento(data_solicitacao, parcelas)
-                            dias_vencimento, dias_acumulados = calcular_dias_vencimento(datas_vencimento, data_solicitacao_dt)
-                            fatores = calcular_fatores(taxa_juros, dias_acumulados)
-                            coeficiente = calcular_coeficiente(fatores)
-                            taxas_juros_parcela = calcular_taxa_juros_parcela(taxa_juros, dias_vencimento)
-                            valor_financiado_inicial = calcular_valor_financiado(valor, escolha)
-                            valor_prestacao = calcular_valor_prestacao(valor_financiado_inicial, coeficiente)
-                            amortizacoes, saldos_devedores, iof_diario_parcelas = calcular_amortizacao_e_saldo_devedor(
-                                valor_financiado_inicial, coeficiente, parcelas, taxas_juros_parcela, dias_acumulados)
-                            iof_adicional = calcular_iof_adicional(valor_financiado_inicial)
-                            total_iof = iof_adicional + sum(iof_diario_parcelas)
-                            valor_financiado_com_iof = valor_financiado_inicial + total_iof
-                            valor_prestacao_com_iof = calcular_valor_prestacao(valor_financiado_com_iof, coeficiente)
-
-                            # Adicionar espaço vazio na col2
-                            with col2:
-                                st.write("")
-                                st.write("")
-                                st.write("")
-                                st.markdown(f'<p style="color: #7CB26E;">Valor solicitado: R$ {valor:,.2f}</p>', unsafe_allow_html=True)
-                                st.markdown(f'<p style="color: #7CB26E;">Taxa de Juros: {taxa_juros}%</p>', unsafe_allow_html=True)
-                                st.markdown(f'<p style="color: #7CB26E;">Quantidade de parcelas: {parcelas}</p>', unsafe_allow_html=True)
-
-                                data = {
-                                    "Número da Parcela": list(range(1, parcelas + 1)),
-                                    "Data de Vencimento": [data_venc.strftime('%d/%m/%Y') for data_venc in datas_vencimento],
-                                    "Valor da Parcela": [f"R$ {valor_prestacao_com_iof:,.2f}" for _ in range(parcelas)]
-                                }
-                                df = pd.DataFrame(data)
-                                
-                                # Estilizar o DataFrame
-                                styled_df = df.style.set_table_styles(
-                                    [{'selector': 'table',
-                                        'props': [('border', '1px solid black')]},
-                                    {'selector': 'td',
-                                        'props': [('border', '1px solid black'), ('white-space', 'nowrap')]},
-                                    {'selector': 'th',
-                                        'props': [('border', '1px solid black'), ('white-space', 'nowrap')]}]
-                                ).set_properties(**{'text-align': 'center'}).hide(axis='index')
-
-                                # Exibir o DataFrame no Streamlit
-                                st.dataframe(styled_df, use_container_width=True, hide_index=True)
-
-                            # Reset the form fields
-                            st.session_state.reset_form = True
-
-                        except ValueError as e:
-                            st.error(f"Ocorreu um erro ao processar os dados: {e}")
-                        except Exception as e:
-                            st.error(f"Ocorreu um erro inesperado: {e}")
-
-            else:
-                st.warning("Infelizmente não localizamos seu CPF em nossa base de cadastro, confira se digitou corretamente ou entre em contato com RH da sua empresa.")
+    if not st.session_state.cpf_validado:
+        cpf = st.text_input("Digite seu CPF (somente números):")
+        if len(cpf) == 11 and cpf.isdigit():
+            if st.button('Buscar'):
+                dados_cpf = carregar_dados_cpf(cpf)
+                if not dados_cpf.empty:
+                    st.session_state.cpf_validado = True
+                    st.session_state.dados_cpf = dados_cpf.to_dict(orient='records')[0]
+                else:
+                    st.warning("Infelizmente não localizamos seu CPF em nossa base de cadastro, confira se digitou corretamente ou entre em contato com RH da sua empresa.")
+        else:
+            st.warning("Por favor, insira um CPF válido com 11 dígitos.")
     else:
-        st.warning("Por favor, insira um CPF válido com 11 dígitos.")
+        dados_cpf = st.session_state.dados_cpf
+        nome = dados_cpf["Nome"]
+        empresa = dados_cpf["Empresa"]
+        margem = float(dados_cpf["Margem"])
+        parcela_maxima = float(dados_cpf["Parcela Maxima"])
+
+        st.markdown(f"<p>Olá {nome}, confira as informações abaixo:</p>", unsafe_allow_html=True)
+        st.markdown(f"<p>Trabalha na empresa: {empresa}</p>", unsafe_allow_html=True)
+        st.markdown(f"<p>Margem pré-aprovada: R$ {margem:,.2f}</p>", unsafe_allow_html=True)
+        st.markdown(f"<p>Parcela máxima: R$ {parcela_maxima:,.2f}</p>", unsafe_allow_html=True)
+
+        if "reset_form" not in st.session_state:
+            st.session_state.reset_form = False
+
+        if st.session_state.reset_form:
+            st.session_state.valor = 0.0
+            st.session_state.taxa_juros = 0.0
+            st.session_state.parcelas = 1
+            st.session_state.escolha = "Empréstimo"
+            st.session_state.reset_form = False
+
+        col1, col2 = st.columns([1, 2])
+
+        with col1:
+            st.markdown('<p style="color: #7CB26E; font-weight: bold;">Tipo de operação:</p>', unsafe_allow_html=True)
+            escolha = st.radio("", ('Empréstimo', 'Antecipação Salarial'), key='escolha')
+
+            st.markdown(f'<p style="color: #7CB26E;">Data de solicitação: {datetime.now(tz).strftime("%d/%m/%Y")}</p>', unsafe_allow_html=True)
+            valor = st.number_input("Valor solicitado (R$):", min_value=0.0, step=0.01, key='valor')
+            taxa_juros = st.number_input("Taxa de juros mensal (%):", min_value=0.0, step=0.01, key='taxa_juros')
+            if escolha == 'Empréstimo':
+                parcelas = st.number_input("Quantidade de parcelas:", min_value=1, step=1, key='parcelas')
+            else:
+                parcelas = 1
+                st.markdown('<p style="color: #7CB26E;">A quantidade de parcelas para antecipação salarial é sempre 1.</p>', unsafe_allow_html=True)
+
+            if st.button('Calcular'):
+                try:
+                    data_solicitacao = datetime.now(tz).strftime('%d/%m/%Y')
+                    data_solicitacao_dt = datetime.strptime(data_solicitacao, '%d/%m/%Y')
+                    datas_vencimento = calcular_datas_vencimento(data_solicitacao, parcelas)
+                    dias_vencimento, dias_acumulados = calcular_dias_vencimento(datas_vencimento, data_solicitacao_dt)
+                    fatores = calcular_fatores(taxa_juros, dias_acumulados)
+                    coeficiente = calcular_coeficiente(fatores)
+                    taxas_juros_parcela = calcular_taxa_juros_parcela(taxa_juros, dias_vencimento)
+                    valor_financiado_inicial = calcular_valor_financiado(valor, escolha)
+                    valor_prestacao = calcular_valor_prestacao(valor_financiado_inicial, coeficiente)
+                    amortizacoes, saldos_devedores, iof_diario_parcelas = calcular_amortizacao_e_saldo_devedor(
+                        valor_financiado_inicial, coeficiente, parcelas, taxas_juros_parcela, dias_acumulados)
+                    iof_adicional = calcular_iof_adicional(valor_financiado_inicial)
+                    total_iof = iof_adicional + sum(iof_diario_parcelas)
+                    valor_financiado_com_iof = valor_financiado_inicial + total_iof
+                    valor_prestacao_com_iof = calcular_valor_prestacao(valor_financiado_com_iof, coeficiente)
+
+                    # Adicionar espaço vazio na col2
+                    with col2:
+                        st.write("")
+                        st.write("")
+                        st.write("")
+                        st.markdown(f'<p style="color: #7CB26E;">Valor solicitado: R$ {valor:,.2f}</p>', unsafe_allow_html=True)
+                        st.markdown(f'<p style="color: #7CB26E;">Taxa de Juros: {taxa_juros}%</p>', unsafe_allow_html=True)
+                        st.markdown(f'<p style="color: #7CB26E;">Quantidade de parcelas: {parcelas}</p>', unsafe_allow_html=True)
+
+                        data = {
+                            "Número da Parcela": list(range(1, parcelas + 1)),
+                            "Data de Vencimento": [data_venc.strftime('%d/%m/%Y') for data_venc in datas_vencimento],
+                            "Valor da Parcela": [f"R$ {valor_prestacao_com_iof:,.2f}" for _ in range(parcelas)]
+                        }
+                        df = pd.DataFrame(data)
+                        
+                        # Estilizar o DataFrame
+                        styled_df = df.style.set_table_styles(
+                            [{'selector': 'table',
+                                'props': [('border', '1px solid black')]},
+                            {'selector': 'td',
+                                'props': [('border', '1px solid black'), ('white-space', 'nowrap')]},
+                            {'selector': 'th',
+                                'props': [('border', '1px solid black'), ('white-space', 'nowrap')]}]
+                        ).set_properties(**{'text-align': 'center'}).hide(axis='index')
+
+                        # Exibir o DataFrame no Streamlit
+                        st.dataframe(styled_df, use_container_width=True, hide_index=True)
+
+                    # Reset the form fields
+                    st.session_state.reset_form = True
+
+                except ValueError as e:
+                    st.error(f"Ocorreu um erro ao processar os dados: {e}")
+                except Exception as e:
+                    st.error(f"Ocorreu um erro inesperado: {e}")
 
 if __name__ == "__main__":
     main()
