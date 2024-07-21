@@ -149,7 +149,18 @@ def main():
 
 
     with col2:
-       "x"
+            # Exibir resultados gerais
+            st.markdown(f'<p style="color: #7CB26E;">Valor solicitado: R$ {valor:,.2f}</p>', unsafe_allow_html=True)
+            st.markdown(f'<p style="color: #7CB26E;">Taxa de Juros: {taxa_juros}%</p>', unsafe_allow_html=True)
+            st.markdown(f'<p style="color: #7CB26E;">Quantidade de parcelas: {parcelas}</p>', unsafe_allow_html=True)
+
+            data = {
+               "Número da Parcela": list(range(1, parcelas + 1)),
+               "Data de Vencimento": [data_venc.strftime('%d/%m/%Y') for data_venc in datas_vencimento],
+               "Valor da Parcela": [f"R$ {valor_prestacao_com_iof:,.2f}" for _ in range(parcelas)]
+            }
+
+
     if st.button('Calcular'):
         try:
             data_solicitacao = datetime.now(tz).strftime('%d/%m/%Y')
@@ -168,16 +179,6 @@ def main():
             valor_financiado_com_iof = valor_financiado_inicial + total_iof
             valor_prestacao_com_iof = calcular_valor_prestacao(valor_financiado_com_iof, coeficiente)
 
-            # Exibir resultados gerais
-            st.markdown(f'<p style="color: #7CB26E;">Valor solicitado: R$ {valor:,.2f}</p>', unsafe_allow_html=True)
-            st.markdown(f'<p style="color: #7CB26E;">Taxa de Juros: {taxa_juros}%</p>', unsafe_allow_html=True)
-            st.markdown(f'<p style="color: #7CB26E;">Quantidade de parcelas: {parcelas}</p>', unsafe_allow_html=True)
-
-            data = {
-               "Número da Parcela": list(range(1, parcelas + 1)),
-               "Data de Vencimento": [data_venc.strftime('%d/%m/%Y') for data_venc in datas_vencimento],
-               "Valor da Parcela": [f"R$ {valor_prestacao_com_iof:,.2f}" for _ in range(parcelas)]
-            }
             df = pd.DataFrame(data)
             
             # Estilizar o DataFrame
