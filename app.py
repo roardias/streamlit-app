@@ -115,85 +115,87 @@ def set_css():
         """
         <style>
         .stApp {
-            background-color: #f5f5f5;
+            background-color: #f7f5ff;
+            padding: 20px;
+            border-radius: 10px;
         }
         .stTextInput > div > input,
         .stNumberInput > div > div > input {
             background-color: #ffffff;
-            border: 1px solid #cccccc;
-            border-radius: 10px;
-            padding: 8px;
+            border: 1px solid #d1d1d1;
+            border-radius: 5px;
+            padding: 10px;
             width: 100%;
             margin-bottom: 10px;
-            font-size: 14px;
+            font-size: 16px;
         }
         .stRadio > div {
             display: flex;
-            flex-direction: column;
-            background-color: #e6f7ff;
-            border-radius: 10px;
+            flex-direction: row;
+            background-color: #ffffff;
+            border-radius: 5px;
             padding: 10px;
-            border: 1px solid #b3e0ff;
+            border: 1px solid #d1d1d1;
             margin-top: 10px;
         }
         .stRadio > div > label {
-            color: #007acc;
+            color: #333333;
             font-weight: bold;
-            margin-bottom: 5px;
+            margin-right: 20px;
         }
         .stRadio > div > div > label {
-            color: #000000;
+            color: #333333;
         }
         .stRadio > div > div > label:hover {
             color: #007acc;
         }
         .stButton > button {
-            background-color: #007acc;
+            background-color: #6200ee;
             color: white;
             border: none;
-            border-radius: 10px;
-            padding: 8px 16px;
-            font-size: 14px;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
             cursor: pointer;
         }
         .stButton > button:hover {
-            background-color: #005f99;
+            background-color: #4500cb;
         }
         .stDataFrame table {
             border-collapse: collapse;
             width: 100%;
             margin: auto;
-            border-radius: 10px;
+            border-radius: 5px;
             overflow: hidden;
             table-layout: fixed;
         }
         .stDataFrame table th,
         .stDataFrame table td {
-            border: 1px solid #cccccc;
+            border: 1px solid #d1d1d1;
             text-align: center;
-            padding: 5px;
-            font-size: 12px;
+            padding: 10px;
+            font-size: 14px;
         }
         .stDataFrame table thead th {
-            background-color: #007acc;
+            background-color: #6200ee;
             color: white;
         }
         .stDataFrame table tbody tr:nth-child(even) {
             background-color: #f2f2f2;
         }
         .stDataFrame table tbody tr:hover {
-            background-color: #e6e6e6;
+            background-color: #e0e0e0;
         }
         .stMarkdown h1 {
-            color: #007acc;
+            color: #333333;
         }
         .stMarkdown p {
-            color: #007acc;
+            color: #333333;
         }
         .stRadio > div > label,
         .stNumberInput > label,
         .stTextInput > label {
-            color: #007acc;
+            color: #333333;
         }
         .stRadio > div > div > label {
             text-align: center;
@@ -204,11 +206,10 @@ def set_css():
     )
 
 def main():
-    st.set_page_config(page_title="Calculadora de Empréstimo/Antecipação Salarial", layout="wide")
+    st.set_page_config(page_title="Simulador de Empréstimo", layout="wide")
     set_css()
 
-    st.image("images/MARCA_CONSIGO_CRED_VETOR_CURVAS_5.png", width=200)
-    st.markdown('<h1 style="color: #007acc;">Calculadora de Empréstimo/Antecipação Salarial</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 style="color: #333333;">Simulador de Empréstimo</h1>', unsafe_allow_html=True)
 
     if "reset_form" not in st.session_state:
         st.session_state.reset_form = False
@@ -217,28 +218,24 @@ def main():
         st.session_state.valor = 0.0
         st.session_state.taxa_juros = 0.0
         st.session_state.parcelas = 1
-        st.session_state.escolha = "Empréstimo"
+        st.session_state.escolha = "Pessoal"
         st.session_state.reset_form = False
 
-    col1, col2 = st.columns([1, 2])
+    col1, col2, col3 = st.columns([1, 1, 1])
 
     with col1:
-        st.markdown('<div style="background-color: #e6f7ff; border-radius: 10px; padding: 10px;">', unsafe_allow_html=True)
-        st.markdown('<p style="color: #007acc; font-weight: bold;">Tipo de operação:</p>', unsafe_allow_html=True)
-        escolha = st.radio("", ('Empréstimo', 'Antecipação Salarial'), key='escolha')
-        st.markdown('</div>', unsafe_allow_html=True)
-
+        st.markdown('<p style="color: #333333; font-weight: bold;">Qual o tipo de empréstimo desejado?</p>', unsafe_allow_html=True)
+        escolha = st.radio("", ('Pessoal', 'FGTS', 'Consignado', 'Com Garantia'), key='escolha')
+    
     with col2:
-        st.markdown(f'<p style="color: #007acc;">Data de solicitação: {datetime.now(tz).strftime("%d/%m/%Y")}</p>', unsafe_allow_html=True)
-        valor = st.number_input("Valor solicitado (R$):", min_value=0.0, step=0.01, key='valor')
-        taxa_juros = st.number_input("Taxa de juros mensal (%):", min_value=0.0, step=0.01, key='taxa_juros')
-        if escolha == 'Empréstimo':
-            parcelas = st.number_input("Quantidade de parcelas:", min_value=1, step=1, key='parcelas')
-        else:
-            parcelas = 1
-            st.markdown('<p style="color: #007acc;">A quantidade de parcelas para antecipação salarial é sempre 1.</p>', unsafe_allow_html=True)
+        valor = st.number_input("Valor do empréstimo (R$):", min_value=0.0, step=0.01, key='valor')
 
-    if st.button('Calcular'):
+    with col3:
+        taxa_juros = st.number_input("Taxa de juros (%):", min_value=0.0, step=0.01, key='taxa_juros')
+
+    parcelas = st.number_input("Número de parcelas:", min_value=1, step=1, key='parcelas')
+
+    if st.button('CALCULAR'):
         try:
             data_solicitacao = datetime.now(tz).strftime('%d/%m/%Y')
             data_solicitacao_dt = datetime.strptime(data_solicitacao, '%d/%m/%Y')
@@ -257,9 +254,9 @@ def main():
             valor_prestacao_com_iof = calcular_valor_prestacao(valor_financiado_com_iof, coeficiente)
 
             # Exibir resultados gerais
-            st.markdown(f'<p style="color: #007acc;">Valor solicitado: R$ {valor:,.2f}</p>', unsafe_allow_html=True)
-            st.markdown(f'<p style="color: #007acc;">Taxa de Juros: {taxa_juros}%</p>', unsafe_allow_html=True)
-            st.markdown(f'<p style="color: #007acc;">Quantidade de parcelas: {parcelas}</p>', unsafe_allow_html=True)
+            st.markdown(f'<p style="color: #333333;">Valor solicitado: R$ {valor:,.2f}</p>', unsafe_allow_html=True)
+            st.markdown(f'<p style="color: #333333;">Taxa de Juros: {taxa_juros}%</p>', unsafe_allow_html=True)
+            st.markdown(f'<p style="color: #333333;">Quantidade de parcelas: {parcelas}</p>', unsafe_allow_html=True)
 
             data = {
                "Número da Parcela": list(range(1, parcelas + 1)),
