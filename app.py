@@ -139,7 +139,7 @@ def main():
         st.session_state.cpf_validado = False
 
     if not st.session_state.cpf_validado:
-        cpf = st.text_input("Digite seu CPF (somente números):")
+        cpf = st.text_input("Digite seu CPF (somente números):", max_chars=11)
         if len(cpf) == 11 and cpf.isdigit():
             if st.button('Buscar'):
                 dados_cpf = carregar_dados_cpf(cpf)
@@ -179,10 +179,15 @@ def main():
             escolha = st.radio("", ('Empréstimo', 'Antecipação Salarial'), key='escolha')
 
             st.markdown(f'<p style="color: #7CB26E;">Data de solicitação: {datetime.now(tz).strftime("%d/%m/%Y")}</p>', unsafe_allow_html=True)
-            valor = st.number_input("Valor solicitado (R$):", min_value=0.0, max_value=margem, step=0.01, key='valor')
-            if valor > margem:
-                st.warning(f"O valor máximo liberado para você é de R$ {margem:,.2f}")
-            taxa_juros = st.number_input("Taxa de juros mensal (%):", min_value=0.0, step=0.01, key='taxa_juros')
+            if escolha == 'Empréstimo':
+                valor = st.number_input("Valor solicitado (R$):", min_value=0.0, max_value=margem, step=0.01, key='valor')
+                if valor > margem:
+                    st.warning(f"O valor máximo liberado para você é de R$ {margem:,.2f}")
+            else:
+                valor = st.number_input("Valor solicitado (R$):", min_value=0.0, max_value=parcela_maxima, value=parcela_maxima, step=0.01, key='valor')
+                if valor > parcela_maxima:
+                    st.warning(f"O valor máximo liberado para você é de R$ {parcela_maxima:,.2f}")
+            taxa_juros = st.number_input("Taxa de juros mensal (%):", min_value=0.0, step=0.01, key='taxa_juros', format="%f")
             if escolha == 'Empréstimo':
                 parcelas = st.number_input("Quantidade de parcelas:", min_value=1, step=1, key='parcelas')
             else:
