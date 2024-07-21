@@ -280,19 +280,6 @@ def main():
             # Exibir o DataFrame no Streamlit
             st.dataframe(styled_df)
 
-            # Preparar os dados para exibição em tabela
-            data = {
-                "Número da Parcela": list(range(1, parcelas + 1)),
-                "Data de Vencimento": [data_venc.strftime('%d/%m/%Y') for data_venc in datas_vencimento],
-                "Valor da Parcela": [f"R$ {valor_prestacao_com_iof:,.2f}" for _ in range(parcelas)]
-            }
-            
-            df = pd.DataFrame(data)
-
-            # Aplicar estilo CSS à tabela
-            st.write('<style>table {table-layout: fixed; width: 50%; border-collapse: collapse;} th, td {color: #7CB26E; border: 2px solid black; text-align: center; padding: 5px; font-size: 12px;}</style>', unsafe_allow_html=True)
-            st.write(df.to_html(index=False), unsafe_allow_html=True)
-
             # Reset the form fields
             st.session_state.reset_form = True
 
