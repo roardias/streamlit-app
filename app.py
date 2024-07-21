@@ -134,8 +134,7 @@ def main():
     col1, col2 = st.columns([1, 2])
 
     with col1:
-        st.markdown('<div style="background-color: #7CB26E; border-radius: 15px; padding: 10px;">', unsafe_allow_html=True)
-        st.markdown('<p style="color: #FFFFFF; font-weight: bold;">Tipo de operação:</p>', unsafe_allow_html=True)
+        st.markdown('<p style="color: #7CB26E; font-weight: bold;">Tipo de operação:</p>', unsafe_allow_html=True)
         escolha = st.radio("", ('Empréstimo', 'Antecipação Salarial'), key='escolha')
         st.markdown('</div>', unsafe_allow_html=True)
 
