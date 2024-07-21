@@ -149,60 +149,60 @@ def main():
 
 
     with col2:
-            "x"
-
-    if st.button('Calcular'):
-        try:
-            data_solicitacao = datetime.now(tz).strftime('%d/%m/%Y')
-            data_solicitacao_dt = datetime.strptime(data_solicitacao, '%d/%m/%Y')
-            datas_vencimento = calcular_datas_vencimento(data_solicitacao, parcelas)
-            dias_vencimento, dias_acumulados = calcular_dias_vencimento(datas_vencimento, data_solicitacao_dt)
-            fatores = calcular_fatores(taxa_juros, dias_acumulados)
-            coeficiente = calcular_coeficiente(fatores)
-            taxas_juros_parcela = calcular_taxa_juros_parcela(taxa_juros, dias_vencimento)
-            valor_financiado_inicial = calcular_valor_financiado(valor, escolha)
-            valor_prestacao = calcular_valor_prestacao(valor_financiado_inicial, coeficiente)
-            amortizacoes, saldos_devedores, iof_diario_parcelas = calcular_amortizacao_e_saldo_devedor(
-                valor_financiado_inicial, coeficiente, parcelas, taxas_juros_parcela, dias_acumulados)
-            iof_adicional = calcular_iof_adicional(valor_financiado_inicial)
-            total_iof = iof_adicional + sum(iof_diario_parcelas)
-            valor_financiado_com_iof = valor_financiado_inicial + total_iof
-            valor_prestacao_com_iof = calcular_valor_prestacao(valor_financiado_com_iof, coeficiente)
+        if st.button('Calcular'):
+            try:
+                data_solicitacao = datetime.now(tz).strftime('%d/%m/%Y')
+                data_solicitacao_dt = datetime.strptime(data_solicitacao, '%d/%m/%Y')
+                datas_vencimento = calcular_datas_vencimento(data_solicitacao, parcelas)
+                dias_vencimento, dias_acumulados = calcular_dias_vencimento(datas_vencimento, data_solicitacao_dt)
+                fatores = calcular_fatores(taxa_juros, dias_acumulados)
+                coeficiente = calcular_coeficiente(fatores)
+                taxas_juros_parcela = calcular_taxa_juros_parcela(taxa_juros, dias_vencimento)
+                valor_financiado_inicial = calcular_valor_financiado(valor, escolha)
+                valor_prestacao = calcular_valor_prestacao(valor_financiado_inicial, coeficiente)
+                amortizacoes, saldos_devedores, iof_diario_parcelas = calcular_amortizacao_e_saldo_devedor(
+                    valor_financiado_inicial, coeficiente, parcelas, taxas_juros_parcela, dias_acumulados)
+                iof_adicional = calcular_iof_adicional(valor_financiado_inicial)
+                total_iof = iof_adicional + sum(iof_diario_parcelas)
+                valor_financiado_com_iof = valor_financiado_inicial + total_iof
+                valor_prestacao_com_iof = calcular_valor_prestacao(valor_financiado_com_iof, coeficiente)
             
                         
-            # Exibir resultados gerais
-            st.markdown(f'<p style="color: #7CB26E;">Valor solicitado: R$ {valor:,.2f}</p>', unsafe_allow_html=True)
-            st.markdown(f'<p style="color: #7CB26E;">Taxa de Juros: {taxa_juros}%</p>', unsafe_allow_html=True)
-            st.markdown(f'<p style="color: #7CB26E;">Quantidade de parcelas: {parcelas}</p>', unsafe_allow_html=True)
+                # Exibir resultados gerais
+                st.markdown(f'<p style="color: #7CB26E;">Valor solicitado: R$ {valor:,.2f}</p>', unsafe_allow_html=True)
+                st.markdown(f'<p style="color: #7CB26E;">Taxa de Juros: {taxa_juros}%</p>', unsafe_allow_html=True)
+                st.markdown(f'<p style="color: #7CB26E;">Quantidade de parcelas: {parcelas}</p>', unsafe_allow_html=True)
 
-            data = {
-               "Número da Parcela": list(range(1, parcelas + 1)),
-               "Data de Vencimento": [data_venc.strftime('%d/%m/%Y') for data_venc in datas_vencimento],
-               "Valor da Parcela": [f"R$ {valor_prestacao_com_iof:,.2f}" for _ in range(parcelas)]
-            }
+                data = {
+                    "Número da Parcela": list(range(1, parcelas + 1)),
+                    "Data de Vencimento": [data_venc.strftime('%d/%m/%Y') for data_venc in datas_vencimento],
+                    "Valor da Parcela": [f"R$ {valor_prestacao_com_iof:,.2f}" for _ in range(parcelas)]
+                }
            
-            df = pd.DataFrame(data)
+                df = pd.DataFrame(data)
             
-            # Estilizar o DataFrame
-            styled_df = df.style.set_table_styles(
-                [{'selector': 'table',
-                    'props': [('border', '1px solid black')]},
-                 {'selector': 'td',
-                    'props': [('border', '1px solid black'), ('white-space', 'nowrap')]},
-                 {'selector': 'th',
-                    'props': [('border', '1px solid black'), ('white-space', 'nowrap')]}]
-            ).set_properties(**{'text-align': 'center'}).hide(axis='index')
+                # Estilizar o DataFrame
+                styled_df = df.style.set_table_styles(
+                    [{'selector': 'table',
+                        'props': [('border', '1px solid black')]},
+                    {'selector': 'td',
+                        'props': [('border', '1px solid black'), ('white-space', 'nowrap')]},
+                    {'selector': 'th',
+                        'props': [('border', '1px solid black'), ('white-space', 'nowrap')]}]
+                ).set_properties(**{'text-align': 'center'}).hide(axis='index')
 
-            # Exibir o DataFrame no Streamlit
-            st.dataframe(styled_df, use_container_width=True, hide_index=True)
+                # Exibir o DataFrame no Streamlit
+                st.dataframe(styled_df, use_container_width=True, hide_index=True)
 
-            # Reset the form fields
-            st.session_state.reset_form = True
+                # Reset the form fields
+                st.session_state.reset_form = True
 
-        except ValueError as e:
-            st.error(f"Ocorreu um erro ao processar os dados: {e}")
-        except Exception as e:
-            st.error(f"Ocorreu um erro inesperado: {e}")
+            except ValueError as e:
+                st.error(f"Ocorreu um erro ao processar os dados: {e}")
+            except Exception as e:
+                st.error(f"Ocorreu um erro inesperado: {e}")
 
+
+    
 if __name__ == "__main__":
     main()
